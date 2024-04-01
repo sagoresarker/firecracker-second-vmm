@@ -30,15 +30,15 @@ func GetVMDetails(userID string) (string, string, string, string, string, string
 		return "", "", "", "", "", "", "", "", "", "", err
 	}
 
-	bridgeName := document["bridgeName"].(string)
-	tapName1 := document["tapName1"].(string)
-	tapName2 := document["tapName2"].(string)
-	vm1Eth0IP := document["vm1_eth0_ip"].(string)
-	vm2Eth0IP := document["vm2_eth0_ip"].(string)
-	macAddress1 := document["mac_address1"].(string)
-	macAddress2 := document["mac_address2"].(string)
-	bridgeIPAddress := document["Bridge_ipAddress"].(string)
-	bridgeGatewayIPAddress := document["Bridge_gateway_ip"].(string)
+	bridgeName, _ := document["bridgeName"].(string)
+	tapName1, _ := document["tapName1"].(string)
+	tapName2, _ := document["tapName2"].(string)
+	vm1Eth0IP, _ := document["vm1_eth0_ip"].(string)
+	vm2Eth0IP, _ := document["vm2_eth0_ip"].(string)
+	macAddress1, _ := document["mac_address1"].(string)
+	macAddress2, _ := document["mac_address2"].(string)
+	bridgeIPAddress, _ := document["Bridge_ipAddress"].(string)
+	bridgeGatewayIPAddress, _ := document["bridge_gateway_ip"].(string)
 
 	return bridgeName, tapName1, tapName2, vm1Eth0IP, vm2Eth0IP, macAddress1, macAddress2, bridgeIPAddress, bridgeGatewayIPAddress, userID, nil
 }
