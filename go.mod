@@ -1,6 +1,6 @@
 module github.com/sagoresarker/firecracker-second-vmm
 
-go 1.21.8
+go 1.21
 
 require (
 	github.com/PuerkitoBio/purell v1.1.1 // indirect

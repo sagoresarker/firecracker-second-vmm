@@ -4,14 +4,16 @@ import (
 	"context"
 	"log"
 
+	"github.com/sagoresarker/firecracker-second-vmm/types"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-func GetVMDetails(userID string) (string, string, string, string, string, string, string, string, string, string, error) {
+// GetVMDetails retrieves the VM details for the given userID
+func GetVMDetails(userID string) (types.VMDetails, error) {
 	if mongoClient == nil {
 		log.Fatal("MongoDB client not initialized.")
-		return "", "", "", "", "", "", "", "", "", "", nil
+		return types.VMDetails{}, nil
 	}
 
 	collection := mongoClient.Database("firecrackerdb").Collection("vm-info")
@@ -21,13 +23,13 @@ func GetVMDetails(userID string) (string, string, string, string, string, string
 
 	if result.Err() != nil {
 		log.Println("Error fetching bridge details from MongoDB:", result.Err())
-		return "", "", "", "", "", "", "", "", "", "", result.Err()
+		return types.VMDetails{}, result.Err()
 	}
 
 	var document bson.M
 	if err := result.Decode(&document); err != nil {
 		log.Println("Error decoding bridge details:", err)
-		return "", "", "", "", "", "", "", "", "", "", err
+		return types.VMDetails{}, err
 	}
 
 	bridgeName, _ := document["bridgeName"].(string)
@@ -40,5 +42,15 @@ func GetVMDetails(userID string) (string, string, string, string, string, string
 	bridgeIPAddress, _ := document["Bridge_ipAddress"].(string)
 	bridgeGatewayIPAddress, _ := document["bridge_gateway_ip"].(string)
 
-	return bridgeName, tapName1, tapName2, vm1Eth0IP, vm2Eth0IP, macAddress1, macAddress2, bridgeIPAddress, bridgeGatewayIPAddress, userID, nil
+	return types.VMDetails{
+		BridgeName:      bridgeName,
+		TapName1:        tapName1,
+		TapName2:        tapName2,
+		VM1Eth0IP:       vm1Eth0IP,
+		VM2Eth0IP:       vm2Eth0IP,
+		MacAddress1:     macAddress1,
+		MacAddress2:     macAddress2,
+		BridgeIPAddress: bridgeIPAddress,
+		BridgeGatewayIP: bridgeGatewayIPAddress,
+	}, nil
 }
