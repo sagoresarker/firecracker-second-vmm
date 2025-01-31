@@ -16,9 +16,20 @@ import (
 )
 
 // LaunchVM launches the second VM with the given launcher details
-func LaunchVM(launcher types.Launcher) {
+func LaunchVM(launcher types.Launcher, user_id string) {
 
-	socket_path := launcher.UserID + "/tmp/firecracker2.sock"
+	socket_dir := "Socketfiles/" + user_id + "/tmp/"
+	socket_path := socket_dir + "firecracker2.sock"
+
+	// Check if the directory exists
+	if _, err := os.Stat(socket_dir); os.IsNotExist(err) {
+		// Create the directory with necessary permissions
+		err := os.MkdirAll(socket_dir, 0755)
+		if err != nil {
+			fmt.Println("Error creating directory:", err)
+			return
+		}
+	}
 
 	fmt.Println("Launching VM with tap:", launcher.TapName2)
 
@@ -40,7 +51,7 @@ func LaunchVM(launcher types.Launcher) {
 		LogFifo:         socket_path + ".log",
 		MetricsFifo:     socket_path + "-metrics",
 		LogLevel:        "Debug",
-		KernelImagePath: "files/vmlinux",
+		KernelImagePath: "files/build/vmlinux",
 		KernelArgs:      "ro console=ttyS0 reboot=k panic=1 pci=off",
 		MachineCfg: models.MachineConfiguration{
 			VcpuCount:  firecracker.Int64(2),

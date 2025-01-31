@@ -49,6 +49,6 @@ func main() {
 		BridgeGatewayIP: vmDetails.BridgeGatewayIP,
 	}
 
-	runner.LaunchVM(launcher)
+	runner.LaunchVM(launcher, userID)
 
 }
